@@ -13,6 +13,8 @@ import {
   TrendingUp,
   Download,
   Upload,
+  Timer,
+  X,
 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
@@ -313,6 +315,9 @@ export default function GymTracker() {
   const [justAdded, setJustAdded] = useState(false);
   const [sessionPlan, setSessionPlan] = useState({ moi: null, ben: null });
   const fileInputRef = useRef(null);
+  const [restSeconds, setRestSeconds] = useState(null);
+  const [restDuration, setRestDuration] = useState(90);
+  const audioCtxRef = useRef(null);
 
   useEffect(() => {
     loadAll();
@@ -408,6 +413,63 @@ export default function GymTracker() {
     setNewMachineName("");
   }
 
+  useEffect(() => {
+    if (restSeconds === null || restSeconds <= 0) return;
+    const t = setTimeout(() => setRestSeconds((s) => (s !== null ? s - 1 : null)), 1000);
+    return () => clearTimeout(t);
+  }, [restSeconds]);
+
+  useEffect(() => {
+    if (restSeconds === 0) {
+      playBeep();
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    }
+  }, [restSeconds]);
+
+  function ensureAudioContext() {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    if (!audioCtxRef.current) audioCtxRef.current = new Ctx();
+    if (audioCtxRef.current.state === "suspended") audioCtxRef.current.resume();
+    return audioCtxRef.current;
+  }
+
+  function playBeep() {
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+    [0, 0.25].forEach((delay) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.type = "sine";
+      o.frequency.value = 880;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime + delay);
+      g.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime + delay + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + 0.35);
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.start(ctx.currentTime + delay);
+      o.stop(ctx.currentTime + delay + 0.4);
+    });
+  }
+
+  function startRestTimer(duration) {
+    ensureAudioContext();
+    const d = duration ?? restDuration;
+    setRestDuration(d);
+    setRestSeconds(d);
+  }
+
+  function adjustRestTime(delta) {
+    setRestSeconds((s) => {
+      if (s === null) return null;
+      return Math.max(0, s + delta);
+    });
+  }
+
+  function skipRestTimer() {
+    setRestSeconds(null);
+  }
+
   async function addSet() {
     const m = selectedMachine[person];
     if (!m || weight <= 0 || reps <= 0) return;
@@ -428,6 +490,7 @@ export default function GymTracker() {
     setEntries((prev) => ({ ...prev, [person]: updated }));
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 900);
+    startRestTimer();
     if (hasStorage) {
       try {
         await storage.set(`entries-${person}`, JSON.stringify(updated));
@@ -829,6 +892,30 @@ export default function GymTracker() {
         <button className={`gt-btn gt-btn-accent gt-btn-full${justAdded ? " gt-btn-success" : ""}`} onClick={addSet}>
           {justAdded ? "Série ajoutée ✓" : "Ajouter la série"}
         </button>
+
+        {restSeconds !== null && (
+          <div className={`gt-rest${restSeconds === 0 ? " gt-rest-done" : ""}`}>
+            <div className="gt-rest-left">
+              <Timer size={16} />
+              <span className="gt-rest-time">
+                {restSeconds === 0
+                  ? "Repos terminé"
+                  : `${String(Math.floor(restSeconds / 60)).padStart(2, "0")}:${String(restSeconds % 60).padStart(2, "0")}`}
+              </span>
+            </div>
+            <div className="gt-rest-controls">
+              <button className="gt-rest-adjust" onClick={() => adjustRestTime(-15)} aria-label="Moins 15 secondes">
+                -15s
+              </button>
+              <button className="gt-rest-adjust" onClick={() => adjustRestTime(15)} aria-label="Plus 15 secondes">
+                +15s
+              </button>
+              <button className="gt-rest-skip" onClick={skipRestTimer} aria-label="Passer le repos">
+                <X size={15} />
+              </button>
+            </div>
+          </div>
+        )}
       </section>
 
       <section className="gt-section">
@@ -1078,6 +1165,49 @@ const STYLES = `
   font-weight: 600;
 }
 .gt-backup-btn:hover { color: var(--text); border-color: var(--text-muted); }
+
+.gt-rest {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.gt-rest-done {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.gt-rest-left {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+}
+.gt-rest-time { font-size: 15px; font-weight: 600; letter-spacing: 0.02em; }
+.gt-rest-controls { display: flex; align-items: center; gap: 6px; }
+.gt-rest-adjust {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+}
+.gt-rest-adjust:hover { color: var(--text); border-color: var(--text-muted); }
+.gt-rest-skip {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 4px;
+  display: flex;
+}
+.gt-rest-skip:hover { color: var(--text); }
 
 .gt-card {
   background: var(--surface);
