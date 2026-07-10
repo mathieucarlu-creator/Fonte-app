@@ -1,32 +1,22 @@
-Ajout du "Suivi corporel" à Fonte (+ correction de mise en page)
-==================================================================
+Ajout d'un filet de sécurité pour diagnostiquer le bug "écran gris"
+=====================================================================
 
-CONTENU DE CE ZIP (5 fichiers) :
+UN SEUL FICHIER À REMPLACER :
 
-  src/App.jsx                        -> NOUVEAU fichier
-  src/BodyTracker.jsx                -> NOUVEAU fichier
-  src/main.jsx                       -> REMPLACE ton fichier existant
-  src/GymTracker.jsx                 -> REMPLACE ton fichier existant (juste l'en-tête "FONTE"
-                                         retiré du haut de cette section, le reste est inchangé)
-  netlify/functions/body-data.mjs    -> NOUVEAU fichier
+  src/App.jsx   -> remplace ton fichier existant à ce même emplacement
 
-MISE EN PAGE : le nom "FONTE" est maintenant affiché une seule fois, tout en
-haut de l'appli, avec la navigation "Suivi muscu" / "Suivi corporel" juste en
-dessous. Les deux sections n'affichent plus leur propre titre redondant.
+CE QUE ÇA CHANGE :
 
-Le reste (fonctionnalités du suivi corporel, séparation des stores Netlify
-Blobs, pré-chargement des mesures de départ) est identique à l'envoi précédent.
+Si la section "Suivi corporel" plante encore, au lieu de rester grise sans
+rien afficher, tu verras maintenant un encadré rouge avec le message
+d'erreur exact écrit dessus.
 
-INSTALLATION (sans terminal, directement sur GitHub) :
-
-1. Va sur https://github.com/mathieucarlu-creator/Fonte-app
-2. Dossier "src" > "Add file" > "Upload files" > glisse App.jsx et
-   BodyTracker.jsx > "Commit changes"
-3. Dossier "src" > clique sur "main.jsx" existant > crayon (Edit) > Cmd+A,
-   supprime, colle le contenu du nouveau main.jsx > "Commit changes"
-4. Dossier "src" > clique sur "GymTracker.jsx" existant > crayon (Edit) >
-   Cmd+A, supprime, colle le contenu du GymTracker.jsx fourni ici >
-   "Commit changes"
-5. Dossier "netlify/functions" > "Add file" > "Upload files" > glisse
-   body-data.mjs > "Commit changes"
-6. Va sur app.netlify.com, onglet "Deploys" : le build se relance tout seul.
+INSTALLATION :
+1. github.com/mathieucarlu-creator/Fonte-app > dossier "src" > clique sur
+   "App.jsx" existant > crayon (Edit) > Cmd+A, supprime, colle le nouveau
+   contenu > "Commit changes"
+2. Attends que Netlify termine son build (onglet Deploys)
+3. Recharge le site, retape sur "Suivi corporel"
+4. Si ça plante : copie-moi ici le texte qui s'affiche dans l'encadré rouge
+   (ou fais une capture d'écran) — je pourrai corriger le bug directement
+   avec ça, sans avoir besoin de la console développeur.

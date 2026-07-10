@@ -1,7 +1,40 @@
-import { useState } from "react";
+import { useState, Component } from "react";
 import { Dumbbell, Activity } from "lucide-react";
 import GymTracker from "./GymTracker.jsx";
 import BodyTracker from "./BodyTracker.jsx";
+
+class SectionErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+
+  componentDidCatch(error, info) {
+    // Visible dans la console si jamais elle est accessible, mais l'essentiel
+    // s'affiche déjà directement à l'écran ci-dessous.
+    console.error("Erreur dans la section affichée :", error, info);
+  }
+
+  render() {
+    if (this.state.error) {
+      const message = this.state.error && this.state.error.message ? this.state.error.message : String(this.state.error);
+      return (
+        <div className="app-error">
+          <div className="app-error-title">Cette section a rencontré un problème</div>
+          <div className="app-error-message">{message}</div>
+          <div className="app-error-hint">
+            Fais une capture d'écran de ce message (ou copie-le) et envoie-le à Claude pour corriger le bug.
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function App() {
   const [section, setSection] = useState("muscu");
@@ -28,7 +61,9 @@ export default function App() {
           Suivi corporel
         </button>
       </nav>
-      {section === "muscu" ? <GymTracker /> : <BodyTracker />}
+      <SectionErrorBoundary key={section}>
+        {section === "muscu" ? <GymTracker /> : <BodyTracker />}
+      </SectionErrorBoundary>
     </div>
   );
 }
@@ -83,5 +118,38 @@ const APP_STYLES = `
 .app-nav-active {
   color: #F2F1ED;
   border-color: #4FBFA8;
+}
+.app-error {
+  max-width: 480px;
+  margin: 16px auto 0;
+  padding: 16px;
+  background: #2A2E33;
+  border: 1px solid #C4573F;
+  border-radius: 12px;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+.app-error-title {
+  color: #F2F1ED;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.app-error-message {
+  color: #C4573F;
+  font-family: monospace;
+  font-size: 12.5px;
+  line-height: 1.5;
+  background: #1B1D21;
+  border-radius: 8px;
+  padding: 10px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 10px;
+}
+.app-error-hint {
+  color: #93989E;
+  font-size: 12px;
+  line-height: 1.4;
 }
 `;
