@@ -1,0 +1,19 @@
+Correction du bug "String(t).toFixed is not a function"
+==========================================================
+
+UN SEUL FICHIER À REMPLACER :
+
+  src/BodyTracker.jsx   -> remplace ton fichier existant à ce même emplacement
+
+LE BUG :
+Dans la fonction fmtNum (qui formate tous les nombres affichés : poids,
+masse musculaire, jauges, etc.), j'appelais .toFixed(1) sur le texte du
+nombre au lieu du nombre lui-même. .toFixed n'existe que sur les nombres,
+d'où le plantage dès qu'un chiffre à virgule (ex: 98.6) devait s'afficher.
+
+INSTALLATION :
+1. github.com/mathieucarlu-creator/Fonte-app > dossier "src" > clique sur
+   "BodyTracker.jsx" existant > crayon (Edit) > Cmd+A, supprime, colle le
+   nouveau contenu > "Commit changes"
+2. Attends la fin du build Netlify (onglet Deploys)
+3. Recharge le site, teste "Suivi corporel"
