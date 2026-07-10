@@ -445,11 +445,6 @@ export default function BodyTracker() {
     <div className="bt-app">
       <style>{STYLES}</style>
 
-      <header className="bt-header">
-        <div className="bt-title">Suivi corporel</div>
-        <div className="bt-subtitle">Scans Visbody hebdomadaires</div>
-      </header>
-
       {notice && (
         <div className="bt-notice">
           {notice}
@@ -642,7 +637,7 @@ const STYLES = `
   color: var(--text);
   max-width: 480px;
   margin: 0 auto;
-  padding: 16px 16px 40px;
+  padding: 12px 16px 40px;
   box-sizing: border-box;
 }
 .bt-app *, .bt-app *::before, .bt-app *::after { box-sizing: border-box; }

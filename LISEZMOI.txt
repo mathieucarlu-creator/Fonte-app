@@ -1,51 +1,32 @@
-Ajout du "Suivi corporel" à Fonte
-==================================
+Ajout du "Suivi corporel" à Fonte (+ correction de mise en page)
+==================================================================
 
-CONTENU DE CE ZIP (4 fichiers) :
+CONTENU DE CE ZIP (5 fichiers) :
 
-  src/App.jsx                        -> NOUVEAU fichier, à ajouter dans src/
-  src/BodyTracker.jsx                -> NOUVEAU fichier, à ajouter dans src/
-  src/main.jsx                       -> REMPLACE ton fichier existant src/main.jsx
-  netlify/functions/body-data.mjs    -> NOUVEAU fichier, à ajouter dans netlify/functions/
+  src/App.jsx                        -> NOUVEAU fichier
+  src/BodyTracker.jsx                -> NOUVEAU fichier
+  src/main.jsx                       -> REMPLACE ton fichier existant
+  src/GymTracker.jsx                 -> REMPLACE ton fichier existant (juste l'en-tête "FONTE"
+                                         retiré du haut de cette section, le reste est inchangé)
+  netlify/functions/body-data.mjs    -> NOUVEAU fichier
 
-Ton fichier src/GymTracker.jsx n'est PAS modifié : le suivi muscu continue de
-fonctionner exactement comme avant, sans aucun changement.
+MISE EN PAGE : le nom "FONTE" est maintenant affiché une seule fois, tout en
+haut de l'appli, avec la navigation "Suivi muscu" / "Suivi corporel" juste en
+dessous. Les deux sections n'affichent plus leur propre titre redondant.
 
-COMMENT ÇA MARCHE :
-
-- Un nouveau bandeau de navigation en haut de l'appli permet de basculer entre
-  "Suivi muscu" et "Suivi corporel".
-- Le suivi corporel a SA PROPRE fonction Netlify (body-data.mjs) adossée à un
-  store Netlify Blobs séparé ("fonte-body-data"), complètement distinct du
-  store partagé avec Ben ("fonte-data"). Tes données de composition
-  corporelle ne sont jamais mélangées avec le suivi muscu.
-- Aucune nouvelle variable d'environnement Netlify à configurer : la fonction
-  réutilise BLOBS_SITE_ID et BLOBS_TOKEN, déjà en place pour data.mjs.
-- Tes 6 dernières mesures Visbody sont pré-chargées automatiquement au premier
-  chargement (si aucune donnée n'existe encore dans le store).
-
-CE QUE TU PEUX FAIRE DANS CETTE SECTION :
-
-- "Ajouter une mesure" : formulaire pré-rempli avec tes dernières valeurs
-  (tu ne modifies que ce qui a changé), organisé en 4 groupes (composition,
-  hydratation, scores, posture).
-- 5 graphiques de tendance : poids, masse musculaire, TGC%, note composition,
-  note posture.
-- Cartes de métriques avec jauge Basse/Normal/Haute pour la composition
-  corporelle (poids, masse grasse, TGC%, muscle, IMC, hydratation, etc.)
-- Cartes de posture (sans jauge) avec l'évolution vs la semaine précédente.
-- Historique en tableau avec suppression d'une mesure.
+Le reste (fonctionnalités du suivi corporel, séparation des stores Netlify
+Blobs, pré-chargement des mesures de départ) est identique à l'envoi précédent.
 
 INSTALLATION (sans terminal, directement sur GitHub) :
 
 1. Va sur https://github.com/mathieucarlu-creator/Fonte-app
 2. Dossier "src" > "Add file" > "Upload files" > glisse App.jsx et
    BodyTracker.jsx > "Commit changes"
-3. Dossier "src" > clique sur "main.jsx" existant > icône crayon (Edit) >
-   sélectionne tout (Cmd+A), supprime, colle le contenu du nouveau main.jsx >
+3. Dossier "src" > clique sur "main.jsx" existant > crayon (Edit) > Cmd+A,
+   supprime, colle le contenu du nouveau main.jsx > "Commit changes"
+4. Dossier "src" > clique sur "GymTracker.jsx" existant > crayon (Edit) >
+   Cmd+A, supprime, colle le contenu du GymTracker.jsx fourni ici >
    "Commit changes"
-4. Dossier "netlify/functions" > "Add file" > "Upload files" > glisse
+5. Dossier "netlify/functions" > "Add file" > "Upload files" > glisse
    body-data.mjs > "Commit changes"
-5. Va sur app.netlify.com, onglet "Deploys" : le build se relance tout seul.
-
-Si le build échoue, colle le message d'erreur à Claude pour le corriger.
+6. Va sur app.netlify.com, onglet "Deploys" : le build se relance tout seul.

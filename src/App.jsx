@@ -9,6 +9,9 @@ export default function App() {
   return (
     <div className="app-shell">
       <style>{APP_STYLES}</style>
+      <header className="app-masthead">
+        <div className="app-title">FONTE</div>
+      </header>
       <nav className="app-nav">
         <button
           className={`app-nav-btn${section === "muscu" ? " app-nav-active" : ""}`}
@@ -31,18 +34,32 @@ export default function App() {
 }
 
 const APP_STYLES = `
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Inter:wght@400;500;600&display=swap');
 
 .app-shell {
   background: #1B1D21;
   min-height: 100%;
+}
+.app-masthead {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px 16px 0;
+  box-sizing: border-box;
+}
+.app-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  line-height: 1;
+  color: #F2F1ED;
 }
 .app-nav {
   max-width: 480px;
   margin: 0 auto;
   display: flex;
   gap: 8px;
-  padding: 20px 16px 0;
+  padding: 14px 16px 0;
   box-sizing: border-box;
 }
 .app-nav-btn {

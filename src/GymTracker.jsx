@@ -703,11 +703,6 @@ export default function GymTracker() {
       <style>{STYLES}</style>
       <div className="gt-content">
 
-      <header className="gt-header">
-        <div className="gt-title">FONTE</div>
-        <div className="gt-subtitle">Suivi d'entraînement</div>
-      </header>
-
       <div className="gt-tabs">
         {Object.values(PEOPLE).map((p) => {
           const key = p === PEOPLE.moi ? "moi" : "ben";
@@ -1231,7 +1226,7 @@ const STYLES = `
 .gt-content {
   max-width: 480px;
   margin: 0 auto;
-  padding: 20px 16px 40px;
+  padding: 12px 16px 40px;
 }
 .gt-app button { font-family: 'Inter', sans-serif; cursor: pointer; }
 .gt-app select, .gt-app input { font-family: 'Inter', sans-serif; }
