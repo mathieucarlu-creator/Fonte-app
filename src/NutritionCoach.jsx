@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Flame, Scale, TrendingUp, TrendingDown, CheckCircle2, Trash2, Settings2 } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import FoodJournal from "./FoodJournal.jsx";
 
 // ---------------------------------------------------------------------------
 // Stockage : même Netlify Function que le Suivi corporel (netlify/functions/
@@ -266,6 +267,7 @@ export default function NutritionCoach() {
   const [showWeighForm, setShowWeighForm] = useState(false);
   const [weighDraft, setWeighDraft] = useState({ date: todayStr(), weight: "" });
   const [notice, setNotice] = useState("");
+  const [subView, setSubView] = useState("objectifs");
 
   useEffect(() => {
     loadAll();
@@ -461,6 +463,21 @@ export default function NutritionCoach() {
     <div className="nt-app">
       <style>{STYLES}</style>
 
+      <div className="nt-subnav">
+        <button
+          className={`nt-subnav-btn${subView === "objectifs" ? " nt-subnav-active" : ""}`}
+          onClick={() => setSubView("objectifs")}
+        >
+          Objectifs
+        </button>
+        <button
+          className={`nt-subnav-btn${subView === "journal" ? " nt-subnav-active" : ""}`}
+          onClick={() => setSubView("journal")}
+        >
+          Journal alimentaire
+        </button>
+      </div>
+
       {notice && (
         <div className="nt-notice">
           {notice}
@@ -470,6 +487,13 @@ export default function NutritionCoach() {
         </div>
       )}
 
+      {subView === "journal" ? (
+        <FoodJournal
+          calorieTarget={calorieTarget}
+          macroTargets={{ protein: macros.proteinG, fat: macros.fatG, carbs: macros.carbsG }}
+        />
+      ) : (
+        <>
       <div className="nt-hero-row">
         <div className="nt-hero-card">
           <div className="nt-hero-label">
@@ -741,6 +765,8 @@ export default function NutritionCoach() {
         standard, pas un avis médical personnalisé — ajuste selon comment tu te sens, et consulte un professionnel de
         santé en cas de doute.
       </p>
+        </>
+      )}
     </div>
   );
 }
@@ -773,6 +799,13 @@ const STYLES = `
 .nt-app *:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .nt-loading { display: flex; align-items: center; justify-content: center; min-height: 200px; color: var(--text-muted); }
+
+.nt-subnav { display: flex; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 14px; }
+.nt-subnav-btn {
+  flex: 1; background: transparent; border: none; color: var(--text-muted); border-radius: 9px;
+  padding: 9px 8px; font-weight: 600; font-size: 12.5px; transition: background 0.18s ease, color 0.18s ease;
+}
+.nt-subnav-active { background: var(--accent-soft); color: var(--text); }
 
 .nt-notice {
   display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
